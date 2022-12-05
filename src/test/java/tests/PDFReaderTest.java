@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +24,7 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -33,14 +32,15 @@ import org.testng.annotations.Test;
 public class PDFReaderTest {
 
 	WebDriver driver;
+	String url = "file:///Users/naveenautomationlabs/Desktop/DEVOPS.pdf";
 
 	@BeforeTest
 	public void setup() {
 		//ChromeOptions co = new ChromeOptions();
 		// co.setHeadless(true);
 		// co.addArguments("--incognito");
-		 driver = new ChromeDriver();
-		driver.get("https://www.inkit.com/blog/pdf-the-best-digital-document-management");
+		// driver = new ChromeDriver();
+		//driver.get("https://www.inkit.com/blog/pdf-the-best-digital-document-management");
 
 	}
 
@@ -48,11 +48,12 @@ public class PDFReaderTest {
 	public void pdfReaderTest() throws Exception {
 
 		//String url = driver.findElement(By.xpath("//a[normalize-space()='trillions of PDFs']")).getAttribute("href");
-		driver.findElement(By.xpath("//a[normalize-space()='trillions of PDFs']")).click();
-		Thread.sleep(5000);
-		String url = driver.getCurrentUrl();
+//		driver.findElement(By.xpath("//a[normalize-space()='trillions of PDFs']")).click();
+//		Thread.sleep(5000);
+//		String url = driver.getCurrentUrl();
+		
+		
 		URL pdfUrl = new URL(url);
-
 		URLConnection urlConnection = pdfUrl.openConnection();
 		urlConnection.addRequestProperty("User-Agent", "Mozilla");
 
@@ -75,13 +76,13 @@ public class PDFReaderTest {
 //
 //		System.out.println("========================pdf content===============");
 //		
-		int imagesCount = getImagesFromPDF(pdDocument).size();
-		System.out.println(imagesCount);
-		testPDFBoxExtractImages(pdDocument);
+//		int imagesCount = getImagesFromPDF(pdDocument).size();
+//		System.out.println(imagesCount);
+//		testPDFBoxExtractImages(pdDocument);
 		
 
 		// full pdf page content/text:
-		PDFTextStripper pdfStiper = new PDFTextStripper();
+		//PDFTextStripper pdfStiper = new PDFTextStripper();
 //		String pdfText = pdfStiper.getText(pdDocument);
 //		System.out.println(pdfText);
 //		Assert.assertTrue(pdfText.contains("PDF BOOKMARK SAMPLE"));
@@ -95,10 +96,42 @@ public class PDFReaderTest {
 //		System.out.println(pdfText);
 //		Assert.assertTrue(pdfText.contains("ap_bookmark.dat "));
 		
-		File exp = new File("./727080549996161.png");
-		File act = new File("./727080549996162.png");
+		File exp = new File("./actual_image_hdfc_logo.png");
+		File act = new File("./actual_image_hdfc_logo-modified.png");
 		imageCompare(exp, act);
+		System.out.println(compareImage(exp, act));
+		
+		
+		//checkImages(pdDocument);
+		
+		System.out.println(getImagesFromPDF(pdDocument).size());
+		testPDFBoxExtractImages(pdDocument);
+		
+		
 	}
+	
+	
+//	public void checkImages(PDDocument document) throws IOException {
+//		List<RenderedImage> images = getImagesFromPDF(document);
+//		
+//		
+//		
+//		File folder = new File("./expimages");
+//		File[] listOfFiles = folder.listFiles();
+//
+//		for (File file : listOfFiles) {
+//		    if (file.isFile()) {
+//		        System.out.println(file.getName());
+//		        if(images.contains(file)) {
+//		        	System.out.println("pass");
+//		        }
+//		        else {
+//		        	System.out.println("fail");
+//		        }
+//		    }
+//		}
+//	}
+	
 
 	public List<RenderedImage> getImagesFromPDF(PDDocument document) throws IOException {
 		List<RenderedImage> images = new ArrayList<>();
@@ -121,7 +154,7 @@ public class PDFReaderTest {
 				images.add(((PDImageXObject) xObject).getImage());
 			}
 		}
-
+		
 		return images;
 	}
 	
